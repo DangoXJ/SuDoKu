@@ -42,6 +42,8 @@ cocos2dx-test
 HelloWorld
 # Ignore files build by linux
 *.o
+*.a
+*.so
 .metadata/
 .settings/
 
