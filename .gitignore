@@ -31,6 +31,7 @@ _ReSharper*/
 libs/
 bin/
 obj/
+gen/
 assets/
 .classpath
 .project
