@@ -33,6 +33,8 @@ void SuDoKuLayer::onEnter() {
 	setIsTouchEnabled(true);
 	setIsKeypadEnabled(true);
 
+	CCTouchDispatcher::sharedDispatcher()->addTargetedDelegate(this, 0, true);
+
 	CCSize size = CCDirector::sharedDirector()->getWinSize();
 
 	updateBackground(Config::sharedConfig()->getLevel());
@@ -46,15 +48,14 @@ void SuDoKuLayer::onEnter() {
 	pCloseItem->setPosition(CCPointMake(size.width - 50, size.height - 40));
 	addChild(pMenu, 1);
 
-	m_fBeginX = (size.width - 30*9)/2;
-	m_fBeginY = size.height - (size.height - 32*9)/2;
+	m_fBeginX = (size.width - 30*8)/2-1.5;
+	m_fBeginY = size.height - (size.height - 30*8)/2 + 3;
 
 	CCSprite* sprite = NULL;
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
-			sprite = CCSprite::spriteWithFile(s_pFaceNumSign);
-			sprite->setAnchorPoint(CCPointZero);
-			sprite->setPosition(ccp(m_fBeginX+30*i-3.5,m_fBeginY-(1+j)*32-4));
+			sprite = CCSprite::spriteWithFile(s_pFaceSameSign);
+			sprite->setPosition(ccp(m_fBeginX+30*i,m_fBeginY-j*31.5));
 			addChild(sprite);
 		}
 	}
@@ -69,16 +70,60 @@ void SuDoKuLayer::onEnter() {
 
 }
 void SuDoKuLayer::onExit() {
+	CCTouchDispatcher::sharedDispatcher()->removeDelegate(this);
+	setIsKeypadEnabled(false);
+	setIsTouchEnabled(false);
 	CCLayer::onExit();
 }
 
 // 触摸事件相关
 bool SuDoKuLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent) {
-	return true;
+	CCPoint touchPoint = CCDirector::sharedDirector()->convertToGL(
+				pTouch->locationInView());
+
+		float deltaX = (touchPoint.x - m_fBeginX + 30 / 2);
+		float deltaY = (m_fBeginY + 31.5 / 2 - touchPoint.y);
+
+		if (deltaX < 0 || deltaY < 0) {
+			return true;
+		}
+
+		int x = deltaX / 30;
+		int y = deltaY / 31.5;
+
+		if (x < 9 && y < 9) {
+			char tmp[4];
+			sprintf(tmp, "%3d",y*9+x);
+			m_pLabel->setString(tmp);
+			setSelectedIcon(x,y);
+			return true;
+		}
+		return true;
 }
 
 void SuDoKuLayer::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
+	CCPoint touchPoint = CCDirector::sharedDirector()->convertToGL(
+				pTouch->locationInView());
 
+		float deltaX = (touchPoint.x - m_fBeginX + 30 / 2);
+		float deltaY = (m_fBeginY + 31.5 / 2 - touchPoint.y);
+
+		if (deltaX < 0 || deltaY < 0) {
+			return;
+		}
+
+		int x = deltaX / 30;
+		int y = deltaY / 31.5;
+
+		if (x < 9 && y < 9) {
+			char tmp[4];
+			sprintf(tmp, "%3d",y*9+x);
+			m_pLabel->setString(tmp);
+			setSelectedIcon(x,y);
+			return;
+		}
+
+		return;
 }
 void SuDoKuLayer::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent) {
 
@@ -137,4 +182,13 @@ void SuDoKuLayer::updateBackground(int index) {
 	CCSize size = CCDirector::sharedDirector()->getWinSize();
 	m_tBackground->setPosition(ccp(size.width / 2, size.height / 2));
 	addChild(m_tBackground);
+}
+
+void SuDoKuLayer::setSelectedIcon(int x, int y){
+	if(m_pSelectedIcon){
+		this->removeChild(m_pSelectedIcon,true);
+	}
+	m_pSelectedIcon = CCSprite::spriteWithFile(s_pFaceSign);
+	m_pSelectedIcon->setPosition(ccp(m_fBeginX+30*x,m_fBeginY-y*31.5));
+	addChild(m_pSelectedIcon);
 }

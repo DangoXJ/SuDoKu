@@ -39,6 +39,8 @@ public:
 	void menuCallback(CCObject* pSender);
 	void closeCallback(CCObject * pSender);
 	void updateBackground(int index);
+
+	void setSelectedIcon(int x, int y);
 private:
 	CCSprite* m_tBackground;
     CCLabelBMFont* m_pLabel;
