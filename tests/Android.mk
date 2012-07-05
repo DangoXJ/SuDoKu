@@ -50,7 +50,6 @@ tests/ChipmunkTest/drawSpace.cpp \
 tests/ClickAndMoveTest/ClickAndMoveTest.cpp \
 tests/CocosDenshionTest/CocosDenshionTest.cpp \
 tests/CocosNodeTest/CocosNodeTest.cpp \
-tests/CurlTest/CurlTest.cpp \
 tests/CurrentLanguageTest/CurrentLanguageTest.cpp \
 tests/DirectorTest/DirectorTest.cpp \
 tests/DrawPrimitivesTest/DrawPrimitivesTest.cpp \
