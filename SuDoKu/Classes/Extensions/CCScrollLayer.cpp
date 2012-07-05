@@ -12,6 +12,7 @@ CCScrollLayer::CCScrollLayer() {
 	m_CurPage = 0;
 	m_PageLayer = CCArray::arrayWithCapacity(5);
 	m_PageLayer->retain();
+	m_nPageDelta = PAGE_DELTA;
 }
 
 CCScrollLayer::~CCScrollLayer() {
@@ -39,6 +40,8 @@ void CCScrollLayer::onEnter() {
 }
 
 void CCScrollLayer::onExit() {
+	setIsTouchEnabled(false);
+	setIsKeypadEnabled(false);
 	CCTouchDispatcher::sharedDispatcher()->removeDelegate(this);
 	CCLayer::onExit();
 }
@@ -72,23 +75,22 @@ void CCScrollLayer::ccTouchEnded(cocos2d::CCTouch *pTouch,
 			* (m_TouchUpPoint.x - m_TouchDownPoint.x)
 			+ (m_TouchUpPoint.y - m_TouchDownPoint.y)
 					* (m_TouchUpPoint.y - m_TouchDownPoint.y);
+
 	if (offset < (TOUCH_DELTA * TOUCH_DELTA)) {
 		// 点击
 		// 向子Layer发送Click消息
-		if (((CCLayer*) m_PageLayer->objectAtIndex(m_CurPage))->ccTouchBegan(
-				pTouch, pEvent)) {
-
-		}
+		((CCLayer*) m_PageLayer->objectAtIndex(m_CurPage))->ccTouchBegan(
+				pTouch, pEvent);
 
 	} else {
 		// 滑动结束
-		int offset = getPositionX() - m_CurPage * (-WIDTH + PAGE_DELTA);
-		if (offset > WIDTH / 2) {
+		int offset = getPositionX() - m_CurPage * (-WIDTH + m_nPageDelta);
+		if (offset > OFFSET) {
 			// 上一页
 			if (m_CurPage > 0) {
 				--m_CurPage;
 			}
-		} else if (offset < -WIDTH / 2) {
+		} else if (offset < -OFFSET) {
 			// 下一页
 			if (m_CurPage < (m_Page - 1)) {
 				++m_CurPage;
@@ -106,7 +108,7 @@ void CCScrollLayer::ccTouchCancelled(cocos2d::CCTouch *pTouch,
 
 void CCScrollLayer::goToPage() {
 	CCMoveTo *moveTo = CCMoveTo::actionWithDuration(0.2f,
-			CCPointMake(-m_CurPage * (WIDTH - PAGE_DELTA), 0));
+			CCPointMake(-m_CurPage * (WIDTH - m_nPageDelta), 0));
 	runAction(moveTo);
 }
 
@@ -114,7 +116,7 @@ void CCScrollLayer::addPage(cocos2d::CCLayer *pPageLayer) {
 	if (pPageLayer) {
 		// 设置成一页大小
 		pPageLayer->setContentSize(CCSizeMake(WIDTH, HIGHT));
-		pPageLayer->setPosition(ccp((WIDTH - PAGE_DELTA) * m_Page, 0));
+		pPageLayer->setPosition(ccp((WIDTH - m_nPageDelta) * m_Page, 0));
 		this->addChild(pPageLayer);
 		// 添加到页
 		m_PageLayer->addObject(pPageLayer);
@@ -130,4 +132,8 @@ void CCScrollLayer::keyMenuClicked() {
 
 int CCScrollLayer::getCurrentPage() {
 	return m_CurPage;
+}
+
+void CCScrollLayer::setPageDelta(int delta){
+	m_nPageDelta = delta;
 }

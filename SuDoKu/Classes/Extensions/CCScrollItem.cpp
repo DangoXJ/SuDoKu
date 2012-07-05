@@ -25,7 +25,6 @@ void CCScrollItem::onExit() {
 
 bool CCScrollItem::ccTouchBegan(cocos2d::CCTouch *pTouch,
 		cocos2d::CCEvent *pEvent) {
-	CCLog("I am page %d\n",getTag());
 	return true;
 }
 

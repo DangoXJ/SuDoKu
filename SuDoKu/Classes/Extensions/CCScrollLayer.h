@@ -24,6 +24,10 @@ using namespace cocos2d;
 #define HIGHT (480)
 #endif
 
+#ifndef OFFSET
+#define OFFSET (75)
+#endif
+
 class CCScrollLayer: public cocos2d::CCLayer {
 protected:
     // 按下点
@@ -38,6 +42,7 @@ protected:
     int m_Page;
     // 当前显示页
     int m_CurPage;
+    int m_nPageDelta;
 
 protected:
     // 存储所有页层
@@ -45,7 +50,7 @@ protected:
 
 protected:
     // 跳转页
-    void goToPage();
+    virtual void goToPage();
 
 public:
     CCScrollLayer();
@@ -74,6 +79,7 @@ public:
     // 添加页
     void addPage(CCLayer *pPageLayer);
     int getCurrentPage();
+    void setPageDelta(int delta);
 };
 
 #endif /* CCSCROLLLAYER_H_ */

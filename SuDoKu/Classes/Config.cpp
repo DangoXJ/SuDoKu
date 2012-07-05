@@ -10,7 +10,7 @@
 
 Config* Config::instance = NULL;
 
-Config::Config() {
+Config::Config():m_nLevelPassed(1) {
 }
 
 Config* Config::sharedConfig() {
@@ -28,4 +28,21 @@ void Config::setLevel(int level){
 
 int Config::getLevel(){
 	return m_nLevel;
+}
+
+void Config::setLevelIndex(int levelIndex){
+	m_nLevelIndex = levelIndex;
+	CCLog("Level index %d\n", levelIndex);
+}
+
+int Config::getLevelIndex(){
+	return m_nLevelIndex;
+}
+
+void Config::setLevelPassed(int levelPassed){
+	m_nLevelPassed = levelPassed;
+}
+
+int Config::getLevelPassed(){
+	return m_nLevelPassed;
 }

@@ -70,6 +70,7 @@ protected:
 	CCPoint m_tBeginPos;
 	CCMenu* m_pItmeMenu;
 	CCSprite* m_tBackground;
+	CCLabelBMFont* m_pLabel;
 public:
 	GameMenuDetail();
 	void onEnter();
@@ -77,6 +78,7 @@ public:
 	void keyBackClicked();
 	void closeCallback(CCObject * pSender);
 	void updateBackground(int index);
+	void updatePageNum(int page);
 };
 /**
  * 游戏选项设置
@@ -106,7 +108,6 @@ class GameOverMenu : public CCLayer
 {
 public:
 	GameOverMenu();
-//	~GameOverMenu();
 
 public:
 	void menuCallback(CCObject* pSender);
@@ -128,7 +129,6 @@ public:
 	void menuCallback(CCObject* pSender);
 	void keyBackClicked();
 	void closeCallback(CCObject * pSender);
-//	~GameMenu();
 
 public:
 //	void menuCallback(CCObject* pSender);

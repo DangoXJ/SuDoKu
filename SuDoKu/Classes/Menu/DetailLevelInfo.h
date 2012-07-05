@@ -13,6 +13,12 @@
 class DetailLevelInfo:public CCScrollItem {
 public:
     virtual bool init(int index);
+    bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
+private:
+    int m_nMinLevel;
+    float m_fBeginX;
+    float m_fBeginY;
+
 };
 
 #endif /* DETAILLEVELINFO_H_ */

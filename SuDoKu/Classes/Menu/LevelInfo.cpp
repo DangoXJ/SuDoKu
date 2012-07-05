@@ -21,31 +21,30 @@ bool LevelInfo::initWithBackground(int index) {
 		setContentSize(CCSizeMake(HIGHT, WIDTH));
 		CCSize size = CCDirector::sharedDirector()->getWinSize();
 
-		CCSprite* pSprite = NULL;
 		switch (index) {
 		case 0:
-			pSprite = CCSprite::spriteWithFile(s_pPictureLevel1);
+			m_pSprite = CCSprite::spriteWithFile(s_pPictureLevel1);
 			break;
 		case 1:
-			pSprite = CCSprite::spriteWithFile(s_pPictureLevel2);
+			m_pSprite = CCSprite::spriteWithFile(s_pPictureLevel2);
 			break;
 		case 2:
-			pSprite = CCSprite::spriteWithFile(s_pPictureLevel3);
+			m_pSprite = CCSprite::spriteWithFile(s_pPictureLevel3);
 			break;
 		case 3:
-			pSprite = CCSprite::spriteWithFile(s_pPictureLevel4);
+			m_pSprite = CCSprite::spriteWithFile(s_pPictureLevel4);
 			break;
 		case 4:
-			pSprite = CCSprite::spriteWithFile(s_pPictureLevel5);
+			m_pSprite = CCSprite::spriteWithFile(s_pPictureLevel5);
 			break;
 		case 5:
-			pSprite = CCSprite::spriteWithFile(s_pPictureLevel6);
+			m_pSprite = CCSprite::spriteWithFile(s_pPictureLevel6);
 			break;
 		}
 
-		if (pSprite) {
-			pSprite->setPosition(ccp(size.width / 2, size.height / 2));
-			addChild(pSprite);
+		if (m_pSprite) {
+			m_pSprite->setPosition(ccp(size.width / 2, size.height / 2));
+			addChild (m_pSprite);
 		}
 
 		setTag(index);
@@ -57,7 +56,24 @@ bool LevelInfo::initWithBackground(int index) {
 
 bool LevelInfo::ccTouchBegan(cocos2d::CCTouch *pTouch,
 		cocos2d::CCEvent *pEvent) {
-	Config::sharedConfig()->setLevel(getTag());
-	((CCLayerMultiplex*) getParent()->getParent()->getParent())->switchTo(2);
+
+	CCLog("ddd\n");
+
+	CCPoint touchPoint = CCDirector::sharedDirector()->convertToGL(
+				pTouch->locationInView());
+
+	CCSize size = m_pSprite->getContentSize();
+	float deltaX = size.width/2;
+	float deltaY = size.height/2;
+
+	float x = CCDirector::sharedDirector()->getWinSize().width/2;
+	float y = CCDirector::sharedDirector()->getWinSize().height/2;
+
+	if(touchPoint.x>x-deltaX && touchPoint.x<x+deltaX
+			&& touchPoint.y>y-deltaY && touchPoint.y<y+deltaY){
+		Config::sharedConfig()->setLevel(getTag());
+		((CCLayerMultiplex*) getParent()->getParent()->getParent())->switchTo(2);
+	}
+
 	return true;
 }

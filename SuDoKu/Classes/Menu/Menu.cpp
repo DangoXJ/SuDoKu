@@ -6,9 +6,9 @@
  */
 
 #include "Menu/Menu.h"
-#include "Extensions/CCScrollLayer.h"
 #include "Menu/LevelInfo.h"
 #include "Menu/DetailLevelInfo.h"
+#include "Menu/DetailLevelInfoLayer.h"
 #include "Resource.h"
 #include "Config.h"
 
@@ -20,7 +20,6 @@ Menu::Menu() {
 }
 
 bool Menu::init() {
-
 	CCLayer* pLayer1 = new MainMenu();
 	CCLayer* pLayer2 = new GameMenu();
 	CCLayer* pLayer3 = new GameMenuDetail();
@@ -28,7 +27,6 @@ bool Menu::init() {
 	m_tMenus = CCLayerMultiplex::layerWithLayers(pLayer1, pLayer2, pLayer3,
 			pLayer4, NULL);
 	addChild(m_tMenus, 0);
-
 	return true;
 }
 
@@ -108,7 +106,7 @@ void MainMenu::menuCallback(CCObject* pSender) {
 		((CCLayerMultiplex*) m_pParent)->switchTo(1);
 		break;
 	case tagHighScores:
-		((CCLayerMultiplex*) m_pParent)->switchTo(2);
+//		((CCLayerMultiplex*) m_pParent)->switchTo(2);
 		break;
 	case tagOptions:
 		break;
@@ -183,7 +181,6 @@ void GameMenu::closeCallback(CCObject * pSender) {
 //----------------
 GameMenuDetail::GameMenuDetail() :
 		m_tBackground(NULL) {
-
 }
 
 void GameMenuDetail::onEnter() {
@@ -197,22 +194,27 @@ void GameMenuDetail::onEnter() {
 	updateBackground(Config::sharedConfig()->getLevel());
 
 	// 添加返回按钮
-	CCMenuItemImage *pCloseItem = CCMenuItemImage::itemFromNormalImage(s_pBack,
-			s_pBack, this, menu_selector(GameMenuDetail::closeCallback));
+	CCMenuItemImage *pCloseItem = CCMenuItemImage::itemFromNormalImage(s_pSmallGateBack,
+			s_pSmallGateBack, this, menu_selector(GameMenuDetail::closeCallback));
 	CCMenu* pMenu = CCMenu::menuWithItems(pCloseItem, NULL);
 	pMenu->setPosition(CCPointZero);
-	pCloseItem->setPosition(CCPointMake(size.width / 2, 60));
+	pCloseItem->setPosition(CCPointMake(size.width / 2 -100, 50));
 	addChild(pMenu, 1);
 
-	CCScrollLayer* pLayer = new CCScrollLayer();
+	DetailLevelInfoLayer* pLayer = new DetailLevelInfoLayer();
+	pLayer->setPageDelta(0);
 	if (pLayer && pLayer->init()) {
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 5; i++) {
 			DetailLevelInfo* roleInfo = new DetailLevelInfo();
 			roleInfo->init(i);
 			pLayer->addPage(roleInfo);
 		}
 		addChild(pLayer);
 	}
+
+	m_pLabel = CCLabelBMFont::labelWithString("1",  "fonts/futura-48.fnt");
+	m_pLabel->setPosition(ccp(size.width / 2, 50));
+	addChild(m_pLabel);
 }
 
 void GameMenuDetail::menuCallback(CCObject* pSender) {
@@ -255,6 +257,11 @@ void GameMenuDetail::updateBackground(int index) {
 	addChild(m_tBackground);
 }
 
+void GameMenuDetail::updatePageNum(int page){
+	char tem[4];
+	sprintf(tem, "%d", page+1);
+	m_pLabel->setString(tem);
+}
 //------------------------------------------------------------------
 //
 // ConfigMenu
